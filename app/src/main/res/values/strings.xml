@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mi Primera App</string>
-    <string name="app_title">Mi Primera Aplicación</string>
-    <string name="label_input">Ingresa tu texto:</string>
-    <string name="hint_text">Escribe algo aquí...</string>
-    <string name="label_output">Texto mostrado:</string>
-    <string name="default_label_text">El texto aparecerá aquí</string>
-    <string name="button_text">Procesar Texto</string>
 </resources>

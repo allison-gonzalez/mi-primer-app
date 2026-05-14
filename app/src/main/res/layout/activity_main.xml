@@ -3,67 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@color/white">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/app_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/primary"
-        android:gravity="center"
-        android:layout_marginBottom="30dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/label_input"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp" />
+    android:padding="24dp"
+    android:gravity="center_vertical"
+    android:background="#FCE4EC">
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="text"
-        android:hint="@string/hint_text"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="#999999"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/edit_text_background" />
-
-    <TextView
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/label_output"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp" />
+        android:hint="Escribe algo aquí..."
+        android:inputType="text"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#F48FB1"
+        android:textColor="#880E4F"
+        android:textColorHint="#F06292" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="15dp"
-        android:text="@string/default_label_text"
+        android:layout_height="wrap_content"
+        android:text="El texto aparecerá aquí"
         android:textSize="18sp"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/text_view_background" />
+        android:textColor="#AD1457"
+        android:padding="12dp"
+        android:background="#F8BBD0"
+        android:layout_marginBottom="24dp" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/button_text"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:background="@color/primary"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="wrap_content"
+        android:text="Procesar Texto"
+        android:backgroundTint="#E91E63"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>
