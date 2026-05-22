@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.play.services.wearable)
     implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
