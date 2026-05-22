@@ -20,6 +20,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".presentation.Clase2"></activity>
+
     </application>
 
 </manifest>

@@ -11,9 +11,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button: Button = findViewById(R.id.boton)
-        button.setOnClickListener {
-            Toast.makeText(this, "¡Botón presionado!", Toast.LENGTH_SHORT).show()
+        val boton: Button =findViewById(R.id.boton);
+
+        boton.setOnClickListener{
+            val intent= Intent(this@MainActivity, Clase2::class.java)
+            startActivity(intent)
         }
     }
 }
