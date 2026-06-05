@@ -30,10 +30,19 @@
         android:layout_marginBottom="24dp" />
 
     <Button
+        android:id="@+id/boton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Conectar"
+        android:backgroundTint="#880E4F"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp" />
+
+    <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Procesar Texto"
+        android:text="Enviar"
         android:backgroundTint="#E91E63"
         android:textColor="#FFFFFF" />
 
