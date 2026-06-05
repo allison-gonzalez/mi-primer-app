@@ -43,7 +43,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.play.services.wearable)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
