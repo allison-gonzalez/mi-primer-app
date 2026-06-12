@@ -20,6 +20,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 class MainActivity : AppCompatActivity(),
@@ -35,9 +40,15 @@ class MainActivity : AppCompatActivity(),
     private val PAYLOAD_PATH = "/APP_OPEN"
     lateinit var nodeID: String
 
+    private val SERVER_URL = "http://10.0.2.2:3000/datos"
+
     private lateinit var editText: EditText
     private lateinit var textView: TextView
     private lateinit var enviar: Button
+
+    private lateinit var btnGet: Button
+    private lateinit var btnPost: Button
+    private lateinit var textRespuesta: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +59,11 @@ class MainActivity : AppCompatActivity(),
         textView = findViewById(R.id.textView)
         conectar = findViewById(R.id.boton)
         enviar = findViewById(R.id.button)
+        btnGet = findViewById(R.id.btnGet)
+        btnPost = findViewById(R.id.btnPost)
+        textRespuesta = findViewById(R.id.textRespuesta)
 
+        // ── Chat con reloj ──
         conectar.setOnClickListener {
             if (!deviceConnected) {
                 val tempAct: Activity = activityContext as MainActivity
@@ -61,7 +76,19 @@ class MainActivity : AppCompatActivity(),
                 sendMessage()
             }
         }
+
+        // ── HTTP ──
+        btnGet.setOnClickListener {
+            get(SERVER_URL)
+        }
+
+        btnPost.setOnClickListener {
+            val jsonFijo = """{"mensaje": "Hola desde el celular", "origen": "celular"}"""
+            post(SERVER_URL, jsonFijo)
+        }
     }
+
+    // ── Wearable ──
 
     private fun getNodes(context: Context) {
         launch(Dispatchers.Default) {
@@ -104,7 +131,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onDataChanged(p0: DataEventBuffer) {}
-
     override fun onCapabilityChanged(p0: CapabilityInfo) {}
 
     override fun onPause() {
@@ -113,9 +139,7 @@ class MainActivity : AppCompatActivity(),
             Wearable.getDataClient(activityContext!!).removeListener(this)
             Wearable.getMessageClient(activityContext!!).removeListener(this)
             Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
     }
 
     override fun onResume() {
@@ -125,8 +149,84 @@ class MainActivity : AppCompatActivity(),
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
                 .addListener(this, android.net.Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+
+    // ── HTTP ──
+
+    fun get(url: String) {
+        // Crear un cliente de OkHttp
+        val client = OkHttpClient()
+
+        // Construir la petición
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        // Ejecutar la petición en un hilo aparte
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                // Manejo de error
+                Log.d("FETCH", "Error: ${e.message}")
+                runOnUiThread {
+                    textRespuesta.text = "Error: ${e.message}"
+                }
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.use {
+                    if (!response.isSuccessful) {
+                        Log.d("FETCH", "Error en la respuesta: ${response.code}")
+                        runOnUiThread {
+                            textRespuesta.text = "Error ${response.code}"
+                        }
+                    } else {
+                        // Aquí se maneja la respuesta, por ejemplo, convertirla en String
+                        val responseData = response.body?.string()
+                        Log.d("FETCH", "Respuesta: $responseData")
+                        runOnUiThread {
+                            textRespuesta.text = responseData
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    fun post(url: String, jsonBody: String) {
+        val client = OkHttpClient()
+        val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+        val body = jsonBody.toRequestBody(JSON)
+
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                Log.d("FETCH", "Error: ${e.message}")
+                runOnUiThread {
+                    textRespuesta.text = "Error: ${e.message}"
+                }
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.use {
+                    if (!response.isSuccessful) {
+                        Log.d("FETCH", "Error en la respuesta: ${response.code}")
+                        runOnUiThread {
+                            textRespuesta.text = "Error ${response.code}"
+                        }
+                    } else {
+                        val responseData = response.body?.string()
+                        Log.d("FETCH", "Respuesta: $responseData")
+                        runOnUiThread {
+                            textRespuesta.text = responseData
+                        }
+                    }
+                }
+            }
+        })
     }
 }
