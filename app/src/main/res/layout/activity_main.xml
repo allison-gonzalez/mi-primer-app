@@ -8,110 +8,99 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
-        <!-- ── SECCIÓN CHAT CON RELOJ ── -->
+        <!-- Título -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Chat con reloj"
+            android:text="Monitor de Salud"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#880E4F"
-            android:layout_marginBottom="8dp" />
+            android:gravity="center"
+            android:layout_marginBottom="4dp"/>
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Mensaje para el reloj..."
-            android:inputType="text"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#F48FB1"
-            android:textColor="#880E4F"
-            android:textColorHint="#F06292" />
-
+        <!-- Estado de conexión -->
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvEstadoCelular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mensajes del reloj aparecerán aquí"
-            android:textSize="14sp"
+            android:text="○ Esperando datos del reloj..."
+            android:textSize="12sp"
             android:textColor="#AD1457"
-            android:padding="12dp"
-            android:background="#F8BBD0"
-            android:layout_marginBottom="8dp" />
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
-
-            <Button
-                android:id="@+id/boton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Conectar"
-                android:backgroundTint="#880E4F"
-                android:textColor="#FFFFFF"
-                android:layout_marginEnd="4dp" />
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Enviar"
-                android:backgroundTint="#E91E63"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
-
-        <!-- ── SECCIÓN HTTP ── -->
+        <!-- Datos actuales del reloj -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Peticiones HTTP"
+            android:text="Datos en tiempo real"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#880E4F"
-            android:layout_marginBottom="8dp" />
-
+            android:layout_marginBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:orientation="vertical"
+            android:background="#F8BBD0"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
 
-            <Button
-                android:id="@+id/btnGet"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <TextView
+                android:id="@+id/tvRitmoCelular"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="GET"
-                android:backgroundTint="#AD1457"
-                android:textColor="#FFFFFF"
-                android:layout_marginEnd="4dp" />
+                android:text="❤  --  bpm"
+                android:textSize="20sp"
+                android:textColor="#C2185B"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"/>
 
-            <Button
-                android:id="@+id/btnPost"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <TextView
+                android:id="@+id/tvPasosCelular"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="POST"
-                android:backgroundTint="#E91E63"
-                android:textColor="#FFFFFF" />
+                android:text="👟  --  pasos"
+                android:textSize="18sp"
+                android:textColor="#1565C0"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/tvGiroCelular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🔄  --  rad/s"
+                android:textSize="16sp"
+                android:textColor="#2E7D32"
+                android:gravity="center"/>
         </LinearLayout>
 
+        <!-- Botón para ver resumen del día desde la BD -->
+        <Button
+            android:id="@+id/btnGet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver resumen del día"
+            android:backgroundTint="#880E4F"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Respuesta del servidor -->
         <TextView
             android:id="@+id/textRespuesta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Respuesta HTTP aparecerá aquí"
+            android:text="El resumen del día aparecerá aquí"
             android:textSize="12sp"
             android:textColor="#AD1457"
             android:padding="12dp"
-            android:background="#F8BBD0" />
+            android:background="#F8BBD0"/>
 
     </LinearLayout>
 </ScrollView>

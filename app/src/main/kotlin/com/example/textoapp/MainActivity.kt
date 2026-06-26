@@ -1,14 +1,12 @@
 package com.example.textoapp
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
@@ -17,13 +15,12 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
@@ -33,100 +30,120 @@ class MainActivity : AppCompatActivity(),
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
 
-    lateinit var conectar: Button
     var activityContext: Context? = null
 
-    private var deviceConnected: Boolean = false
-    private val PAYLOAD_PATH = "/APP_OPEN"
-    lateinit var nodeID: String
+    private val SERVER_URL   = "http://10.0.2.2:3000/datos"
+    private val RESUMEN_URL  = "http://10.0.2.2:3000/datos/resumen"
+    private val PAYLOAD_PATH = "/SENSOR_DATA"
 
-    private val SERVER_URL = "http://10.0.2.2:3000/datos"
-
-    private lateinit var editText: EditText
-    private lateinit var textView: TextView
-    private lateinit var enviar: Button
-
+    private lateinit var tvEstadoCelular: TextView
+    private lateinit var tvRitmoCelular: TextView
+    private lateinit var tvPasosCelular: TextView
+    private lateinit var tvGiroCelular: TextView
     private lateinit var btnGet: Button
-    private lateinit var btnPost: Button
     private lateinit var textRespuesta: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        activityContext = this
-        editText = findViewById(R.id.editText)
-        textView = findViewById(R.id.textView)
-        conectar = findViewById(R.id.boton)
-        enviar = findViewById(R.id.button)
-        btnGet = findViewById(R.id.btnGet)
-        btnPost = findViewById(R.id.btnPost)
-        textRespuesta = findViewById(R.id.textRespuesta)
+        activityContext    = this
+        tvEstadoCelular    = findViewById(R.id.tvEstadoCelular)
+        tvRitmoCelular     = findViewById(R.id.tvRitmoCelular)
+        tvPasosCelular     = findViewById(R.id.tvPasosCelular)
+        tvGiroCelular      = findViewById(R.id.tvGiroCelular)
+        btnGet             = findViewById(R.id.btnGet)
+        textRespuesta      = findViewById(R.id.textRespuesta)
 
-        // ── Chat con reloj ──
-        conectar.setOnClickListener {
-            if (!deviceConnected) {
-                val tempAct: Activity = activityContext as MainActivity
-                getNodes(tempAct)
-            }
-        }
-
-        enviar.setOnClickListener {
-            if (deviceConnected) {
-                sendMessage()
-            }
-        }
-
-        // ── HTTP ──
+        // Ver resumen del día desde la BD
         btnGet.setOnClickListener {
-            get(SERVER_URL)
-        }
-
-        btnPost.setOnClickListener {
-            val jsonFijo = """{"mensaje": "Hola desde el celular", "origen": "celular"}"""
-            post(SERVER_URL, jsonFijo)
+            get(RESUMEN_URL)
         }
     }
 
-    // ── Wearable ──
-
-    private fun getNodes(context: Context) {
-        launch(Dispatchers.Default) {
-            val nodeList = Wearable.getNodeClient(context).connectedNodes
-            try {
-                val nodes = Tasks.await(nodeList)
-                for (node in nodes) {
-                    Log.d("NODO", node.toString())
-                    Log.d("NODO", "El id del nodo es: ${node.id}")
-                    nodeID = node.id
-                    deviceConnected = true
-                }
-            } catch (exception: Exception) {
-                Log.d("Error en el nodo", exception.toString())
-            }
-        }
-    }
-
-    private fun sendMessage() {
-        val mensaje = editText.text.toString()
-        Wearable.getMessageClient(activityContext!!)
-            .sendMessage(nodeID, PAYLOAD_PATH, mensaje.toByteArray())
-            .addOnSuccessListener {
-                Log.d("sendMessage", "Mensaje enviado correctamente")
-            }
-            .addOnFailureListener { e ->
-                Log.d("sendMessage", "Error al enviar mensaje ${e.message}")
-            }
-    }
+    // ── Recibir datos del reloj ──
 
     override fun onMessageReceived(ME: MessageEvent) {
-        Log.d("onMessageReceived", ME.toString())
-        Log.d("onMessageReceived", "ID del nodo ${ME.sourceNodeId}")
-        Log.d("onMessageReceived", "Payload: ${ME.path}")
-        val message = String(ME.data, StandardCharsets.UTF_8)
-        Log.d("onMessageReceived", "Mensaje: ${message}")
-        runOnUiThread {
-            textView.text = "Mensaje del reloj: $message"
+        if (ME.path != PAYLOAD_PATH) return
+
+        val json = String(ME.data, StandardCharsets.UTF_8)
+        Log.d("SENSOR_DATA", "Recibido: $json")
+
+        try {
+            val obj      = JSONObject(json)
+            val hr       = obj.getDouble("heartRate")
+            val steps    = obj.getInt("steps")
+            val gyro     = obj.getDouble("gyro")
+
+            runOnUiThread {
+                tvEstadoCelular.text = "● Datos recibidos del reloj"
+                tvRitmoCelular.text  = if (hr > 0) "❤  ${hr.toInt()} bpm" else "❤  Sin lectura"
+                tvPasosCelular.text  = "👟  $steps pasos"
+                tvGiroCelular.text   = "🔄  ${"%.2f".format(gyro)} rad/s"
+                Toast.makeText(activityContext, "Nuevos datos del reloj recibidos", Toast.LENGTH_SHORT).show()
+            }
+
+            // Guardar en MongoDB automáticamente
+            post(SERVER_URL, json)
+
+        } catch (e: Exception) {
+            Log.e("SENSOR_DATA", "Error al parsear: ${e.message}")
+        }
+    }
+
+    // ── HTTP ──
+
+    fun get(url: String) {
+        val client  = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                runOnUiThread { textRespuesta.text = "Error: ${e.message}" }
+            }
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.use {
+                    val data = response.body?.string()
+                    runOnUiThread {
+                        textRespuesta.text = if (response.isSuccessful) formatResumen(data) else "Error ${response.code}"
+                    }
+                }
+            }
+        })
+    }
+
+    fun post(url: String, jsonBody: String) {
+        val client  = OkHttpClient()
+        val body    = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val request = Request.Builder().url(url).post(body).build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                Log.e("POST", "Error: ${e.message}")
+            }
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.use { Log.d("POST", "Guardado: ${response.code}") }
+            }
+        })
+    }
+
+    // Formatea la respuesta del resumen para mostrarla legible
+    private fun formatResumen(data: String?): String {
+        if (data == null) return "Sin datos"
+        return try {
+            val obj = JSONObject(data)
+            if (obj.has("mensaje")) return obj.getString("mensaje")
+            buildString {
+                appendLine("📊 Resumen del día")
+                appendLine("─────────────────")
+                if (obj.has("promedioHR"))  appendLine("❤ Promedio HR: ${obj.getString("promedioHR")} bpm")
+                if (obj.has("maxHR"))       appendLine("⬆ Máx HR:     ${obj.getInt("maxHR")} bpm")
+                if (obj.has("minHR"))       appendLine("⬇ Mín HR:     ${obj.getInt("minHR")} bpm")
+                if (obj.has("pasos"))       appendLine("👟 Pasos:      ${obj.getInt("pasos")}")
+                if (obj.has("totalLecturas")) appendLine("📋 Lecturas:   ${obj.getInt("totalLecturas")}")
+            }
+        } catch (e: Exception) {
+            data
         }
     }
 
@@ -150,83 +167,5 @@ class MainActivity : AppCompatActivity(),
             Wearable.getCapabilityClient(activityContext!!)
                 .addListener(this, android.net.Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
         } catch (e: Exception) { e.printStackTrace() }
-    }
-
-    // ── HTTP ──
-
-    fun get(url: String) {
-        // Crear un cliente de OkHttp
-        val client = OkHttpClient()
-
-        // Construir la petición
-        val request = Request.Builder()
-            .url(url)
-            .build()
-
-        // Ejecutar la petición en un hilo aparte
-        client.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                // Manejo de error
-                Log.d("FETCH", "Error: ${e.message}")
-                runOnUiThread {
-                    textRespuesta.text = "Error: ${e.message}"
-                }
-            }
-
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.use {
-                    if (!response.isSuccessful) {
-                        Log.d("FETCH", "Error en la respuesta: ${response.code}")
-                        runOnUiThread {
-                            textRespuesta.text = "Error ${response.code}"
-                        }
-                    } else {
-                        // Aquí se maneja la respuesta, por ejemplo, convertirla en String
-                        val responseData = response.body?.string()
-                        Log.d("FETCH", "Respuesta: $responseData")
-                        runOnUiThread {
-                            textRespuesta.text = responseData
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-    fun post(url: String, jsonBody: String) {
-        val client = OkHttpClient()
-        val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
-        val body = jsonBody.toRequestBody(JSON)
-
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        client.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                Log.d("FETCH", "Error: ${e.message}")
-                runOnUiThread {
-                    textRespuesta.text = "Error: ${e.message}"
-                }
-            }
-
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.use {
-                    if (!response.isSuccessful) {
-                        Log.d("FETCH", "Error en la respuesta: ${response.code}")
-                        runOnUiThread {
-                            textRespuesta.text = "Error ${response.code}"
-                        }
-                    } else {
-                        val responseData = response.body?.string()
-                        Log.d("FETCH", "Respuesta: $responseData")
-                        runOnUiThread {
-                            textRespuesta.text = responseData
-                        }
-                    }
-                }
-            }
-        })
     }
 }
