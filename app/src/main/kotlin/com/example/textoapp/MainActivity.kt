@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity(),
 
     var activityContext: Context? = null
 
-    private val SERVER_URL   = "http://192.168.3.102:3000/datos"
-    private val RESUMEN_URL  = "http://192.168.3.102:3000/datos/resumen"
+    private val SERVER_URL   = "https://api-smartwatch.onrender.com/datos"
+    private val RESUMEN_URL  = "https://api-smartwatch.onrender.com/datos/resumen"
     private val PAYLOAD_PATH = "/SENSOR_DATA"
 
     private lateinit var tvEstadoCelular: TextView
