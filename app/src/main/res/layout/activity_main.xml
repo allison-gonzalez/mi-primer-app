@@ -2,105 +2,179 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FCE4EC">
+    android:background="@drawable/bg_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
-        <!-- Título -->
+        <!-- ── Header ── -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Monitor de Salud"
-            android:textSize="20sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#880E4F"
-            android:gravity="center"
+            android:textColor="#FFFFFF"
             android:layout_marginBottom="4dp"/>
 
-        <!-- Estado de conexión -->
         <TextView
             android:id="@+id/tvEstadoCelular"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="○ Esperando datos del reloj..."
+            android:text="Esperando datos del reloj..."
             android:textSize="12sp"
-            android:textColor="#AD1457"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="#F8BBD0"
+            android:layout_marginBottom="28dp"/>
 
-        <!-- Datos actuales del reloj -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Datos en tiempo real"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#880E4F"
-            android:layout_marginBottom="8dp"/>
-
+        <!-- ── Hero: Ritmo Cardiaco ── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#F8BBD0"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:background="@drawable/bg_card_transparent"
+            android:padding="24dp"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_heart"
+                android:tint="#FFFFFF"
+                android:layout_marginBottom="10dp"/>
 
             <TextView
                 android:id="@+id/tvRitmoCelular"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="❤  --  bpm"
-                android:textSize="20sp"
-                android:textColor="#C2185B"
+                android:text="--"
+                android:textSize="64sp"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginBottom="10dp"/>
+                android:textColor="#FFFFFF"/>
 
             <TextView
-                android:id="@+id/tvPasosCelular"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="👟  --  pasos"
-                android:textSize="18sp"
-                android:textColor="#1565C0"
-                android:gravity="center"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:id="@+id/tvGiroCelular"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="🔄  --  rad/s"
-                android:textSize="16sp"
-                android:textColor="#2E7D32"
-                android:gravity="center"/>
+                android:text="bpm  |  Ritmo Cardiaco"
+                android:textSize="13sp"
+                android:textColor="#F48FB1"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Botón para ver resumen del día desde la BD -->
-        <Button
+        <!-- ── Fila: Pasos + Giroscopio ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="28dp">
+
+            <!-- Pasos -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_transparent"
+                android:padding="18dp"
+                android:gravity="center"
+                android:layout_marginEnd="6dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/ic_steps"
+                    android:tint="#FFFFFF"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvPasosCelular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="36sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pasos"
+                    android:textSize="12sp"
+                    android:textColor="#F8BBD0"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <!-- Giroscopio -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_transparent"
+                android:padding="18dp"
+                android:gravity="center"
+                android:layout_marginStart="6dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/ic_gyro"
+                    android:tint="#FFFFFF"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvGiroCelular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Giroscopio rad/s"
+                    android:textSize="11sp"
+                    android:textColor="#F8BBD0"
+                    android:gravity="center"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ── Botón resumen ── -->
+        <TextView
             android:id="@+id/btnGet"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ver resumen del día"
-            android:backgroundTint="#880E4F"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:layout_height="52dp"
+            android:text="Ver resumen del dia"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#880E4F"
+            android:background="@drawable/bg_button_white"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Respuesta del servidor -->
-        <TextView
-            android:id="@+id/textRespuesta"
+        <!-- ── Tarjeta de resumen ── -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="El resumen del día aparecerá aquí"
-            android:textSize="12sp"
-            android:textColor="#AD1457"
-            android:padding="12dp"
-            android:background="#F8BBD0"/>
+            android:background="@drawable/bg_card_transparent"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/textRespuesta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="El resumen del dia aparecera aqui"
+                android:textSize="13sp"
+                android:textColor="#F8BBD0"
+                android:lineSpacingExtra="6dp"/>
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
