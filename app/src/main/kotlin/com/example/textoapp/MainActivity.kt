@@ -3,7 +3,6 @@ package com.example.textoapp
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,15 +31,15 @@ class MainActivity : AppCompatActivity(),
 
     var activityContext: Context? = null
 
-    private val SERVER_URL   = "http://10.0.2.2:3000/datos"
-    private val RESUMEN_URL  = "http://10.0.2.2:3000/datos/resumen"
+    private val SERVER_URL   = "https://api-smartwatch.onrender.com/datos"
+    private val RESUMEN_URL  = "https://api-smartwatch.onrender.com/datos/resumen"
     private val PAYLOAD_PATH = "/SENSOR_DATA"
 
     private lateinit var tvEstadoCelular: TextView
     private lateinit var tvRitmoCelular: TextView
     private lateinit var tvPasosCelular: TextView
     private lateinit var tvGiroCelular: TextView
-    private lateinit var btnGet: Button
+    private lateinit var btnGet: TextView
     private lateinit var textRespuesta: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,11 +75,11 @@ class MainActivity : AppCompatActivity(),
             val gyro     = obj.getDouble("gyro")
 
             runOnUiThread {
-                tvEstadoCelular.text = "● Datos recibidos del reloj"
-                tvRitmoCelular.text  = if (hr > 0) "❤  ${hr.toInt()} bpm" else "❤  Sin lectura"
-                tvPasosCelular.text  = "👟  $steps pasos"
-                tvGiroCelular.text   = "🔄  ${"%.2f".format(gyro)} rad/s"
-                Toast.makeText(activityContext, "Nuevos datos del reloj recibidos", Toast.LENGTH_SHORT).show()
+                tvEstadoCelular.text = "Conectado al reloj"
+                tvRitmoCelular.text  = if (hr > 0) "${hr.toInt()}" else "--"
+                tvPasosCelular.text  = "$steps"
+                tvGiroCelular.text   = "${"%.2f".format(gyro)}"
+                Toast.makeText(activityContext, "Datos nuevos recibidos del reloj", Toast.LENGTH_SHORT).show()
             }
 
             // Guardar en MongoDB automáticamente
@@ -134,13 +133,13 @@ class MainActivity : AppCompatActivity(),
             val obj = JSONObject(data)
             if (obj.has("mensaje")) return obj.getString("mensaje")
             buildString {
-                appendLine("📊 Resumen del día")
+                appendLine("Resumen del dia")
                 appendLine("─────────────────")
-                if (obj.has("promedioHR"))  appendLine("❤ Promedio HR: ${obj.getString("promedioHR")} bpm")
-                if (obj.has("maxHR"))       appendLine("⬆ Máx HR:     ${obj.getInt("maxHR")} bpm")
-                if (obj.has("minHR"))       appendLine("⬇ Mín HR:     ${obj.getInt("minHR")} bpm")
-                if (obj.has("pasos"))       appendLine("👟 Pasos:      ${obj.getInt("pasos")}")
-                if (obj.has("totalLecturas")) appendLine("📋 Lecturas:   ${obj.getInt("totalLecturas")}")
+                if (obj.has("promedioHR"))    appendLine("Promedio HR:  ${obj.getString("promedioHR")} bpm")
+                if (obj.has("maxHR"))         appendLine("Maximo HR:    ${obj.getInt("maxHR")} bpm")
+                if (obj.has("minHR"))         appendLine("Minimo HR:    ${obj.getInt("minHR")} bpm")
+                if (obj.has("pasos"))         appendLine("Pasos:        ${obj.getInt("pasos")}")
+                if (obj.has("totalLecturas")) appendLine("Lecturas:     ${obj.getInt("totalLecturas")}")
             }
         } catch (e: Exception) {
             data

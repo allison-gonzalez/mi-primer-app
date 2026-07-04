@@ -153,9 +153,9 @@ class MainActivity : ComponentActivity(),
         val gyroMag   = sqrt(gyroX * gyroX + gyroY * gyroY + gyroZ * gyroZ)
 
         tvHora.text  = hora
-        tvRitmo.text = if (heartRate > 0) "❤  ${heartRate.toInt()} bpm" else "❤  Sin lectura"
-        tvPasos.text = "👟  $pasosHoy pasos"
-        tvGiro.text  = "🔄  ${"%.2f".format(gyroMag)} rad/s"
+        tvRitmo.text = if (heartRate > 0) "${heartRate.toInt()}" else "Sin lectura"
+        tvPasos.text = "$pasosHoy pasos"
+        tvGiro.text  = "${"%.2f".format(gyroMag)} rad/s"
     }
 
     // ── Wearable: buscar nodo del celular ──
@@ -167,9 +167,9 @@ class MainActivity : ComponentActivity(),
                 if (nodes.isNotEmpty()) {
                     nodeID = nodes[0].id
                     deviceConnected = true
-                    withContext(Dispatchers.Main) { tvEstado.text = "● Conectado al celular" }
+                    withContext(Dispatchers.Main) { tvEstado.text = "Conectado al celular" }
                 } else {
-                    withContext(Dispatchers.Main) { tvEstado.text = "○ Sin conexión" }
+                    withContext(Dispatchers.Main) { tvEstado.text = "Sin conexion" }
                 }
             } catch (e: Exception) {
                 Log.e("NODO", "Error: ${e.message}")
@@ -188,7 +188,7 @@ class MainActivity : ComponentActivity(),
                     if (nodes.isNotEmpty()) {
                         nodeID = nodes[0].id
                         deviceConnected = true
-                        withContext(Dispatchers.Main) { tvEstado.text = "● Conectado al celular" }
+                        withContext(Dispatchers.Main) { tvEstado.text = "Conectado al celular" }
                     }
                 } catch (_: Exception) {}
             }
@@ -204,7 +204,7 @@ class MainActivity : ComponentActivity(),
             .addOnSuccessListener { Log.d("SEND", "Enviado: $json") }
             .addOnFailureListener {
                 deviceConnected = false
-                tvEstado.text = "○ Sin conexión"
+                tvEstado.text = "Sin conexion"
             }
     }
 
